@@ -1,0 +1,117 @@
+/* ═══════════════════════════════════════════════════════════
+   BROWSE PAGE
+═══════════════════════════════════════════════════════════ */
+
+.browse-page {
+  padding-top: var(--navbar-h);
+  min-height: 100vh;
+}
+
+.browse-hero {
+  background: linear-gradient(135deg, #1a0d06, #2d1508);
+  padding: var(--space-12) 0 var(--space-8);
+}
+
+.browse-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: var(--space-2);
+}
+
+.browse-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: var(--space-6);
+}
+
+.browse-search-wrap {
+  position: relative;
+  max-width: 600px;
+}
+
+.browse-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.browse-search-input {
+  width: 100%;
+  padding: 14px 50px 14px 48px;
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  color: #fff;
+  outline: none;
+  transition: var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+.browse-search-input::placeholder { color: rgba(255,255,255,0.4); }
+.browse-search-input:focus {
+  background: rgba(255,255,255,0.15);
+  border-color: var(--mana-primary);
+}
+
+.browse-clear {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.browse-body {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-16);
+}
+
+/* Filter pills */
+.filter-pills {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+}
+
+.filter-pill {
+  padding: 8px 18px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border2);
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+
+.filter-pill:hover {
+  border-color: var(--mana-primary);
+  color: var(--mana-primary);
+}
+
+.filter-pill.active {
+  background: var(--mana-primary);
+  border-color: var(--mana-primary);
+  color: #fff;
+}
+
+.browse-results-count {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-6);
+}

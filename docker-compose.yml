@@ -1,0 +1,81 @@
+version: '3.9'
+
+services:
+
+  # ── MySQL Database ────────────────────────────────────────
+  mana-db:
+    image: mysql:8.0
+    container_name: mana-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-mana_root_2025}
+      MYSQL_DATABASE:      mana_db
+      MYSQL_USER:          ${DB_USERNAME:-mana_user}
+      MYSQL_PASSWORD:      ${DB_PASSWORD:-mana_pass_2025}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mana_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mana-network
+
+  # ── Spring Boot Backend ───────────────────────────────────
+  mana-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mana-backend
+    restart: always
+    depends_on:
+      mana-db:
+        condition: service_healthy
+    environment:
+      DB_USERNAME:          ${DB_USERNAME:-mana_user}
+      DB_PASSWORD:          ${DB_PASSWORD:-mana_pass_2025}
+      JWT_SECRET:           ${JWT_SECRET}
+      RAZORPAY_KEY_ID:      ${RAZORPAY_KEY_ID:-rzp_test_placeholder}
+      RAZORPAY_KEY_SECRET:  ${RAZORPAY_KEY_SECRET:-placeholder}
+      CLAUDE_API_KEY:       ${CLAUDE_API_KEY:-}
+      UPLOAD_DIR:           /app/uploads/
+      SPRING_DATASOURCE_URL: jdbc:mysql://mana-db:3306/mana_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true
+    ports:
+      - "8080:8080"
+    volumes:
+      - mana_uploads:/app/uploads
+    networks:
+      - mana-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── React Frontend ────────────────────────────────────────
+  mana-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8080/api/v1}
+        REACT_APP_RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-rzp_test_placeholder}
+    container_name: mana-frontend
+    restart: always
+    depends_on:
+      - mana-backend
+    ports:
+      - "3000:80"
+    networks:
+      - mana-network
+
+volumes:
+  mana_db_data:
+  mana_uploads:
+
+networks:
+  mana-network:
+    driver: bridge
